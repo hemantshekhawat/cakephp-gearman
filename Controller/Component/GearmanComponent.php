@@ -3,7 +3,8 @@ App::uses('Component', 'Controller');
 App::uses('Hash', 'Utility');
 
 class GearmanComponent extends Component {
-	protected static $GearmanClient;
+
+	public static $GearmanClient;
 
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $settings);
@@ -23,6 +24,12 @@ class GearmanComponent extends Component {
 		return is_array($workload) ? json_encode($workload) : $workload;
 	}
 
+/**
+ * Handles the response of a Gearman work
+ * @throws	Exception	if the job responds with an error
+ * @param	string	response		 the response of the job
+ * @return	mixed				the response of the job, or the job handle
+ */
 	protected function _handleResponse($response) {
 		if (self::$GearmanClient->returnCode() == GEARMAN_FAIL) {
 			throw new Exception('Gearman job did not execute successfully');
@@ -31,49 +38,49 @@ class GearmanComponent extends Component {
 		return $response;
 	}
 
-	/**
-	 * Performs a Gearman job with immediate return
-	 * @throws	Exception	if the job responds with an error
-	 * @param	string	$task		the taks name
-	 * @param	string|array	$workload	the workload to send to the job
-	 * @param	string	$taskId		a unique id for this task
-	 * @return	mixed				the response of the job
-	 */
+/**
+ * Performs a Gearman job with immediate return
+ * @throws	Exception	if the job responds with an error
+ * @param	string	$task		the taks name
+ * @param	string|array	$workload	the workload to send to the job
+ * @param	string	$taskId		a unique id for this task
+ * @return	mixed				the response of the job
+ */
 	public function newTask($task, $workload = null, $taskId = null) {
 		return $this->_handleResponse(self::$GearmanClient->doNormal(
 			$task, $this->_formatWorkload($workload), $taskId));
 	}
 
-	/**
-	 * Performs a Gearman job in the background
-	 * @throws	Exception	if the job responds with an error
-	 * @param	string	$task		the taks name
-	 * @param	string|array	$workload	the workload to send to the job
-	 * @param	string	$taskId		a unique id for this task
-	 * @return	mixed				the job handle for the submitted task
-	 */
+/**
+ * Performs a Gearman job in the background
+ * @throws	Exception	if the job responds with an error
+ * @param	string	$task		the taks name
+ * @param	string|array	$workload	the workload to send to the job
+ * @param	string	$taskId		a unique id for this task
+ * @return	mixed				the job handle for the submitted task
+ */
 	public function newBackgroundTask($task, $workload, $taskId) {
 		return $this->_handleResponse(self::$GearmanClient->doBackground(
 			$task, $this->_formatWorkload($workload), $taskId));
 	}
 
-	/**
-	 * Gets the status of a background job
-	 * @param	string	$handle	the job handle, as returned by newBackgroundTask()
-	 * @return	array	An array containing status information for the job corresponding
-	 * to the supplied job handle. The first array element is a boolean indicating whether
-	 * the job is even known, the second is a boolean indicating whether the job is
-	 * still running, and the third and fourth elements correspond to the
-	 * numerator and denominator of the fractional completion percentage, respectively.
-	 */
-	public function getBackgroundStatus($job_handle) {
-		return self::$GearmanClient->jobStatus($job_handle);
+/**
+ * Gets the status of a background job
+ * @param	string	$handle	the job handle, as returned by newBackgroundTask()
+ * @return	array	An array containing status information for the job corresponding
+ * to the supplied job handle. The first array element is a boolean indicating whether
+ * the job is even known, the second is a boolean indicating whether the job is
+ * still running, and the third and fourth elements correspond to the
+ * numerator and denominator of the fractional completion percentage, respectively.
+ */
+	public function getBackgroundStatus($jobHandle) {
+		return self::$GearmanClient->jobStatus($jobHandle);
 	}
 
-	/**
-	 * Sends some arbitrary data for all job servers to see if they echo it back.
-	 * @return	boolean		Returns TRUE on success or FALSE on failure
-	 */
+/**
+ * Sends some arbitrary data for all job servers to see if they echo it back.
+ * @return	boolean		Returns TRUE on success or FALSE on failure
+ */
 	public function pingServers() {
 		return self::$GearmanClient->ping(md5(uniqid()));
 	}

@@ -8,8 +8,11 @@
 App::uses('AppShell', 'Console/Command');
 
 class GearmanTask extends AppShell {
-	protected static $GearmanWorker;
+
+	public static $GearmanWorker;
+
 	protected $_settings = array();
+
 	protected $_workers = array();
 
 	public function initialize() {
@@ -28,6 +31,12 @@ class GearmanTask extends AppShell {
 		}
 	}
 
+/**
+ * Registers a worker method
+ * @throws	InvalidArgumentException	if callback is not valid
+ * @param	string	$worker		The name of the function
+ * @param	Object	$callback	The callback to be called. Can be instance of AppShell, or a valid callback
+ */
 	public function addMethod($worker, $callback) {
 		if (!($callback instanceof Shell) && !is_callable($callback)) {
 			throw new InvalidArgumentException('A callback of type Shell or Callable is required');
