@@ -45,7 +45,7 @@ class GearmanShellTaskTest extends CakeTestCase {
 		$workers = $this->_getProperty('_workers');
 
 		$this->assertArrayHasKey('image_resizer', $workers);
-		$this->assertEquals(array($dummyClass, 'execute'));
+		$this->assertEquals(array($dummyClass, 'execute'), $workers['image_resizer']);
 	}
 
 	public function testGearmanMethodOtherClass() {
@@ -53,7 +53,7 @@ class GearmanShellTaskTest extends CakeTestCase {
 		$workers = $this->_getProperty('_workers');
 
 		$this->assertArrayHasKey('file_uploader', $workers);
-		$this->assertEquals(array('DummyClass', 'upload'));
+		$this->assertEquals(array('DummyClass', 'upload'), $workers['file_uploader']);
 	}
 
 	public function tearDown() {
