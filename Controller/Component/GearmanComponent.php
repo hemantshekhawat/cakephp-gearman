@@ -72,7 +72,7 @@ class GearmanComponent extends Component {
  * @param	string	$taskId		a unique id for this task
  * @return	mixed				the job handle for the submitted task
  */
-	public function newBackgroundTask($task, $workload, $taskId) {
+	public function newBackgroundTask($task, $workload = null, $taskId = null) {
 		return $this->_handleResponse(self::$GearmanClient->doBackground(
 			$task, $this->_formatWorkload($workload), $taskId));
 	}
