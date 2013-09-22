@@ -16,7 +16,7 @@ class GearmanComponent extends Component {
 				$settings = Configure::read('Gearman');
 			}
 
-			self::$GearmanClient->addServers(implode(',', $settings['servers']);
+			self::$GearmanClient->addServers(implode(',', $settings['servers']));
 		}
 	}
 
