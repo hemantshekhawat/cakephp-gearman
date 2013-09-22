@@ -43,6 +43,25 @@ class ImageResizeShell extends GearmanWorkerShell {
 	}
 }
 ```
+or ...
+```php
+class ImageResizeShell extends AppShell {
+	public $uses = array('Gearman');
+	
+	public function startup() {
+		parent::startup();
+		$this->Gearman->addMethod('image_resize', $this);
+	}
+
+	public function main() {
+		$this->Gearman->execute();
+	}
+
+	public function execute(GearmanJob $job, array $workload) {
+		// do something useful with $workload
+	}
+}
+```
 
 Then **start your worker**:
 ```sh
