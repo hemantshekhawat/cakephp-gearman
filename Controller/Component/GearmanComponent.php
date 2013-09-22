@@ -3,26 +3,28 @@ App::uses('Component', 'Controller');
 App::uses('Hash', 'Utility');
 
 class GearmanComponent extends Component {
-	protected $GearmanClient;
-	protected $_defaults = array(
-		'server' => '127.0.0.1',
-		'port' => 4730
-	);
+	protected static $GearmanClient;
 
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $settings);
-		$settings = Hash::merge($settings, $this->_defaults);
 
-		$this->GearmanClient = new GearmanClient();
-		$this->GearmanClient->addServer($settings['server'], $settings['port']);
+		if (! self::$GearmanClient) {
+			self::$GearmanClient = new GearmanClient();
+
+			if (empty($settings['servers'])) {
+				$settings = Configure::read('Gearman');
+			}
+
+			self::$GearmanClient->addServers(implode(',', $settings['servers']);
+		}
 	}
 
-	protected function formatWorkload($workload) {
+	protected function _formatWorkload($workload) {
 		return is_array($workload) ? json_encode($workload) : $workload;
 	}
 
-	protected function handleResponse($response) {
-		if ($this->GearmanClient->returnCode() == GEARMAN_FAIL) {
+	protected function _handleResponse($response) {
+		if (self::$GearmanClient->returnCode() == GEARMAN_FAIL) {
 			throw new Exception('Gearman job did not execute successfully');
 		}
 
@@ -38,8 +40,8 @@ class GearmanComponent extends Component {
 	 * @return	mixed				the response of the job
 	 */
 	public function newTask($task, $workload = null, $taskId = null) {
-		return $this->handleResponse($this->GearmanClient->doNormal(
-			$task, $this->formatWorkload($workload), $taskId));
+		return $this->_handleResponse(self::$GearmanClient->doNormal(
+			$task, $this->_formatWorkload($workload), $taskId));
 	}
 
 	/**
@@ -51,8 +53,8 @@ class GearmanComponent extends Component {
 	 * @return	mixed				the job handle for the submitted task
 	 */
 	public function newBackgroundTask($task, $workload, $taskId) {
-		return $this->handleResponse($this->GearmanClient->doBackground(
-			$task, $this->formatWorkload($workload), $taskId));
+		return $this->_handleResponse(self::$GearmanClient->doBackground(
+			$task, $this->_formatWorkload($workload), $taskId));
 	}
 
 	/**
@@ -65,7 +67,7 @@ class GearmanComponent extends Component {
 	 * numerator and denominator of the fractional completion percentage, respectively.
 	 */
 	public function getBackgroundStatus($job_handle) {
-		return $this->GearmanClient->jobStatus($job_handle);
+		return self::$GearmanClient->jobStatus($job_handle);
 	}
 
 	/**
@@ -73,6 +75,6 @@ class GearmanComponent extends Component {
 	 * @return	boolean		Returns TRUE on success or FALSE on failure
 	 */
 	public function pingServers() {
-		return $this->GearmanClient->ping(md5(uniqid()));
+		return self::$GearmanClient->ping(md5(uniqid()));
 	}
 }

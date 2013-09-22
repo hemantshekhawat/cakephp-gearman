@@ -8,30 +8,27 @@
 App::uses('AppShell', 'Console/Command');
 
 class GearmanWorkerShell extends AppShell {
-	const SERVER_ADDRESS = '127.0.0.1';
-	const SERVER_PORT = 4730;
-
-	protected $GearmanWorker;
-	protected $_address;
-	protected $_port;
+	protected static $GearmanWorker;
+	protected $_settings = array();
 
 	public function initialize() {
 		parent::initialize();
 
-		$this->_address = self::SERVER_ADDRESS;
-		$this->_port = self::SERVER_PORT;
+		$this->_settings = Configure::read('Gearman');
 	}
 
 	public function startup() {
 		parent::startup();
 
-		$this->GearmanWorker = new GearmanWorker();
-		$this->GearmanWorker->addServer($this->_address, $this->_port);
-		$this->GearmanWorker->addOptions(GEARMAN_WORKER_GRAB_UNIQ);
+		if (! self::$GearmanWorker) {
+			self::$GearmanWorker = new GearmanWorker();
+			self::$GearmanWorker->addServer($this->_address, $this->_port);
+			self::$GearmanWorker->addOptions(GEARMAN_WORKER_GRAB_UNIQ);
+		}
 	}
 
 	public function doWork() {
-		while($this->GearmanWorker->work());
+		while(self::$GearmanWorker->work());
 	}
 
 	public function registerWorker($worker, $callback) {
@@ -43,6 +40,6 @@ class GearmanWorkerShell extends AppShell {
 			$callback = array($callback, 'execute');
 		}
 
-		$this->GearmanWorker->addFunction($worker, $callback);
+		self::$GearmanWorker->addFunction($worker, $callback);
 	}
 }
