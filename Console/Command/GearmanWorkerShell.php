@@ -22,8 +22,9 @@ class GearmanWorkerShell extends AppShell {
 
 		if (! self::$GearmanWorker) {
 			self::$GearmanWorker = new GearmanWorker();
-			self::$GearmanWorker->addServer($this->_address, $this->_port);
+			self::$GearmanWorker->addServers(implode(',', $this->_settings['servers']));
 			self::$GearmanWorker->addOptions(GEARMAN_WORKER_GRAB_UNIQ);
+			self::$GearmanWorker->addOptions(GEARMAN_WORKER_NON_BLOCKING);
 		}
 	}
 
