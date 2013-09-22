@@ -3,6 +3,16 @@ App::uses('ConsoleOutput', 'Console');
 App::uses('ConsoleInput', 'Console');
 App::uses('GearmanShellTask', 'Gearman.Console/Command/Task');
 
+class DummyClass {
+
+	public function execute(GearmanJob $job) {
+	}
+
+	public static function upload(GearmanJob $job) {
+	}
+
+}
+
 class GearmanShellTaskTest extends CakeTestCase {
 
 	public $GearmanTask;
@@ -27,19 +37,21 @@ class GearmanShellTaskTest extends CakeTestCase {
 	}
 
 	public function testGearmanMethod() {
-		$this->GearmanTask->addMethod('image_resizer', $this);
+		$dummyClass = new DummyClass;
+
+		$this->GearmanTask->addMethod('image_resizer', $dummyClass);
 		$workers = $this->_getProperty('_workers');
 
 		$this->assertArrayHasKey('image_resizer', $workers);
-		$this->assertEquals(array($this, 'execute'));
+		$this->assertEquals(array($dummyClass, 'execute'));
 	}
 
 	public function testGearmanMethodOtherClass() {
-		$this->GearmanTask->addMethod('file_uploader', array('FileUploader', 'upload'));
+		$this->GearmanTask->addMethod('file_uploader', array('DummyClass', 'upload'));
 		$workers = $this->_getProperty('_workers');
 
 		$this->assertArrayHasKey('file_uploader', $workers);
-		$this->assertEquals(array('FileUploader', 'upload'));
+		$this->assertEquals(array('DummyClass', 'upload'));
 	}
 
 	public function tearDown() {
