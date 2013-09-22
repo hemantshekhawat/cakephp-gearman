@@ -24,6 +24,8 @@ class GearmanShellTaskTest extends CakeTestCase {
 		$in = $this->getMock('ConsoleInput', array(), array(), '', false);
 
 		$this->GearmanTask = new GearmanShellTask($out, $out, $in);
+		$this->GearmanTask->initialize();
+		$this->GearmanTask->startup();
 	}
 
 	public function testGearmanWorker() {
