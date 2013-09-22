@@ -4,6 +4,9 @@
  *  Used to start workers which will perform jobs. Workers can also be placed on other servers,
  *  written in another language than PHP. This Shell is just used to provide an easy way of setting up
  *  workers within CakePHP.
+ *
+ *  [UserShell] -> GearmanShellTask::addMethod
+ *  Gearman -> GearmanShellTask::execute -> GearmanShellTask::work -> [UserShell]->[callback]
  */
 App::uses('AppShell', 'Console/Command');
 App::uses('CakeEvent', 'Event');
@@ -20,10 +23,6 @@ class GearmanShellTask extends AppShell {
 	public function initialize() {
 		parent::initialize();
 		$this->_settings = Configure::read('Gearman') ?: array('servers' => array('127.0.0.1'));
-	}
-
-	public function startup() {
-		parent::startup();
 
 		if (! self::$GearmanWorker) {
 			$serversList = implode(',', $this->_settings['servers']);
@@ -52,12 +51,12 @@ class GearmanShellTask extends AppShell {
 		}
 
 		$this->_workers[$worker] = $callback;
-		self::$GearmanWorker->addFunction($worker, array($this, '_work'));
+		self::$GearmanWorker->addFunction($worker, array($this, 'work'));
 
 		$this->log('Adding method ' . $worker . ' to list of functions', 'info', 'gearman');
 	}
 
-	public function _work(GearmanJob $job) {
+	public function work(GearmanJob $job) {
 		$json = json_decode($job->workload(), true);
 
 		if (! json_last_error()) {
