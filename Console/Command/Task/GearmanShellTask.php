@@ -71,7 +71,34 @@ class GearmanShellTask extends AppShell {
 		$eventManager->dispatch(new CakeEvent('Gearman.afterWork', $this, $workload));
 	}
 
+/**
+ * Executes the jobs that have been added to the worker.
+ * @throws RuntimeException if the worker cannot listen for jobs
+ */
 	public function execute() {
-		while(self::$GearmanWorker->work());
+		$worker = self::$GearmanWorker;
+		// @codingStandardsIgnoreStart
+		while (@$worker->work() || $worker->returnCode() == GEARMAN_IO_WAIT ||
+			// @codingStandardsIgnoreEnd
+			$worker->returnCode() == GEARMAN_NO_JOBS) {
+			if ($worker->returnCode() == GEARMAN_SUCCESS) {
+				continue;
+			}
+
+			// waiting for next job
+			// @codingStandardsIgnoreStart
+			if (!@$worker->wait()) {
+				// @codingStandardsIgnoreEnd
+				if ($worker->returnCode() == GEARMAN_NO_ACTIVE_FDS) {
+					// not connected to any servers
+					sleep(5);
+					continue;
+				}
+
+				break;
+			}
+		}
+
+		throw new RuntimeException('Worker Error: ' . $worker->error());
 	}
 }
