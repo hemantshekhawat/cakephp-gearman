@@ -44,8 +44,8 @@ class GearmanComponent extends Component {
  * @return	mixed				the response of the job, or the job handle
  */
 	protected function _handleResponse($response) {
-		if (self::$GearmanClient->returnCode() == GEARMAN_FAIL) {
-			throw new Exception('Gearman job did not execute successfully');
+		if (self::$GearmanClient->returnCode() == GEARMAN_WORK_FAIL) {
+			throw new Exception('Gearman job did not execute successfully: ' . self::$GearmanClient->error());
 		}
 
 		return $response;
