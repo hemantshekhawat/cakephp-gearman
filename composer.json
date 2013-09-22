@@ -1,0 +1,21 @@
+{
+    "name": "davidsteinsland/cakephp-gearman",
+    "description": "Gearman integration with CakePHP",
+    "type": "cakephp-plugin",
+    "keywords": ["cakephp", "gearman", "worker"],
+    "homepage": "https://github.com/davidsteinsland/cakephp-gearman",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Steinsland",
+            "role": "Author"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "composer/installers": "*"
+    },
+    "extra": {
+        "installer-name": "Gearman"
+    }
+}
