@@ -16,6 +16,7 @@ class GearmanTaskTest extends CakeTestCase {
 	}
 
 	public function testGearmanWorker() {
+		$this->assertNotNull(GearmanTask::$GearmanWorker);
 		$this->assertInstanceOf('GearmanWorker', GearmanTask::$GearmanWorker);
 	}
 

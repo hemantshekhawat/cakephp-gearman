@@ -11,7 +11,7 @@ App::uses('CakeEventManager', 'Event');
 
 class GearmanTask extends AppShell {
 
-	public static $GearmanWorker;
+	public static $GearmanWorker = null;
 
 	protected $_settings = array();
 
