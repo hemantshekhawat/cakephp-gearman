@@ -65,6 +65,6 @@ class GearmanShellTaskTest extends CakeTestCase {
 		$class = new ReflectionClass('GearmanShellTask');
 		$property = $class->getProperty($property);
 		$property->setAccessible(true);
-		return $property->getValue(new GearmanShellTask);
+		return $property->getValue($this->GearmanTask);
 	}
 }

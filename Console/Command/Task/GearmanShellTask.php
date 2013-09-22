@@ -28,7 +28,7 @@ class GearmanShellTask extends AppShell {
 		if (! self::$GearmanWorker) {
 			$serversList = implode(',', $this->_settings['servers']);
 			$this->log('Creating instance of GearmanWorker with servers: ' . $serversList, 'info', 'gearman');
-			
+
 			self::$GearmanWorker = new GearmanWorker();
 			self::$GearmanWorker->addServers($serversList);
 			self::$GearmanWorker->addOptions(GEARMAN_WORKER_GRAB_UNIQ);
