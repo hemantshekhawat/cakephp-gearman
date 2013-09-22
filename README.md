@@ -23,7 +23,7 @@ CakePlugin::load('Gearman', array('bootstrap' => true));
 Your client code:
 ```php
 class MyController {
-	public $uses = array('Gearman');
+	public $components = array('Gearman.Gearman');
 
 	public function someMethod() {
 		$this->Gearman->newTaskBackground('image_resize', array(
@@ -37,7 +37,7 @@ class MyController {
 Your worker code (`app/Console/Command/ImageResizeShell`):
 ```php
 class ImageResizeShell extends AppShell {
-	public $uses = array('GearmanShell');
+	public $tasks = array('Gearman.GearmanShell');
 
 	public function startup() {
 		parent::startup();
