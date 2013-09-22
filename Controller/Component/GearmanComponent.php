@@ -6,6 +6,13 @@ class GearmanComponent extends Component {
 
 	public static $GearmanClient;
 
+/**
+ * Constructs the Gearman Client component. Settings are fetched from array, Configure
+ * or defaults to localhost. Throws Exception if the Gearmand (the server) is not responding
+ * @throws GearmanException	if the gearman client can't connect to the gearman server, an exception is thrown
+ * @param	ComponentCollection	$collection
+ * @param	array				$settings	Settings to pass to the gearman client
+ */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $settings);
 

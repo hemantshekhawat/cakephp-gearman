@@ -12,11 +12,16 @@ class GearmanComponentTest extends CakeTestCase {
 		parent::setUp();
 
 		$Collection = new ComponentCollection();
-		$this->GearmanComponent = new GearmanComponent($Collection, array(
-			'servers'	=> array(
-				'127.0.0.1'
-			)
-		));
+
+		try {
+			$this->GearmanComponent = new GearmanComponent($Collection, array(
+				'servers'	=> array(
+					'127.0.0.1'
+				)
+			));
+		} catch (GearmanException $e) {
+			$this->fail($e->getMessage());
+		}
 	}
 
 	public function testGearmanClient() {
