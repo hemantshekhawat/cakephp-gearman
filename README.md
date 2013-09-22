@@ -28,23 +28,6 @@ class MyController {
 
 Your worker code (`app/Console/Command/ImageResizeShell`):
 ```php
-class ImageResizeShell extends GearmanWorkerShell {
-	public function main() {
-		$this->registerWorker('image_resize', $this);
-		$this->doWork();
-	}
-
-	public function execute(GearmanJob $job) {
-		$data = json_decode($job->workload());
-
-		$im = new Imagick();
-		$im->addImage($data->src);
-		// do something
-	}
-}
-```
-or ...
-```php
 class ImageResizeShell extends AppShell {
 	public $uses = array('Gearman');
 	
