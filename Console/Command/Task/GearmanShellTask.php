@@ -79,8 +79,9 @@ class GearmanShellTask extends AppShell {
 		$worker = self::$GearmanWorker;
 		// @codingStandardsIgnoreStart
 		while (@$worker->work() || $worker->returnCode() == GEARMAN_IO_WAIT ||
-			// @codingStandardsIgnoreEnd
 			$worker->returnCode() == GEARMAN_NO_JOBS) {
+			// @codingStandardsIgnoreEnd
+			
 			if ($worker->returnCode() == GEARMAN_SUCCESS) {
 				continue;
 			}
