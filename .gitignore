@@ -1,0 +1,4 @@
+*.komodoproject
+*.komodotools
+Console/Command/ImageResizerShell.php
+Console/Command/Task/ImageResizerTask.php
