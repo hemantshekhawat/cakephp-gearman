@@ -58,7 +58,7 @@ class GearmanShellTask extends AppShell {
 		$this->log('Adding method ' . $worker . ' to list of functions', 'info', 'gearman');
 	}
 
-	protected function _work(GearmanJob $job) {
+	public function _work(GearmanJob $job) {
 		$json = json_decode($job->workload(), true);
 
 		if (! json_last_error()) {
