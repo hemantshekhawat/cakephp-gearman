@@ -12,7 +12,7 @@ class GearmanTaskTest extends CakeTestCase {
 		$out = $this->getMock('ConsoleOutput', array(), array(), '', false);
 		$in = $this->getMock('ConsoleInput', array(), array(), '', false);
 
-		$this->GearmanTask = new GearmanTask ($out, $out, $in);
+		$this->GearmanTask = new GearmanTask($out, $out, $in);
 	}
 
 	public function testGearmanWorker() {
@@ -42,6 +42,7 @@ class GearmanTaskTest extends CakeTestCase {
 
 	public function tearDown() {
 		parent::tearDown();
+		unset($this->GearmanTask);
 	}
 
 	protected function _getProperty($property) {
