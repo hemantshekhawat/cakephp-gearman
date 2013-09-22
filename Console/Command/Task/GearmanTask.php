@@ -6,6 +6,8 @@
  *  workers within CakePHP.
  */
 App::uses('AppShell', 'Console/Command');
+App::uses('CakeEvent', 'Event');
+App::uses('CakeEventManager', 'Event');
 
 class GearmanTask extends AppShell {
 
@@ -28,6 +30,8 @@ class GearmanTask extends AppShell {
 			self::$GearmanWorker->addServer($this->_address, $this->_port);
 			self::$GearmanWorker->addOptions(GEARMAN_WORKER_GRAB_UNIQ);
 			self::$GearmanWorker->addOptions(GEARMAN_WORKER_NON_BLOCKING);
+
+			$this->log('Creating instance of GearmanWorker', 'info', 'gearman');
 		}
 	}
 
@@ -48,11 +52,23 @@ class GearmanTask extends AppShell {
 
 		$this->_workers[$worker] = $callback;
 		self::$GearmanWorker->addFunction($worker, array($this, 'work'));
+
+		$this->log('Adding method ' . $worker . ' to list of functions', 'info', 'gearman');
 	}
 
 	protected function _work(GearmanJob $job) {
-		$workload = json_decode($job->workload(), true);
+		$json = json_decode($job->workload(), true);
+
+		if (! json_last_error()) {
+			$workload = $json;
+		}
+
+		$eventManager = new CakeEventManager();
+		$eventManager->dispatch(new CakeEvent('Gearman.beforeWork', $this, $workload));
+
 		call_user_func($this->_workers[$job->functionName()], $job, $workload);
+
+		$eventManager->dispatch(new CakeEvent('Gearman.afterWork', $this, $workload));
 	}
 
 	public function execute() {

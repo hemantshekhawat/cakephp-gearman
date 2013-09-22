@@ -40,7 +40,7 @@ class ImageResizeShell extends AppShell {
 		$this->Gearman->execute();
 	}
 
-	public function execute(GearmanJob $job, array $workload) {
+	public function execute(GearmanJob $job, $workload) {
 		// do something useful with $workload
 	}
 }
