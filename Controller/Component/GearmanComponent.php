@@ -16,6 +16,12 @@ class GearmanComponent extends Component {
 				$settings = Configure::read('Gearman');
 			}
 
+			if (! $settings) {
+				$settings = array(
+					'servers'	=> array('127.0.0.1')
+				);
+			}
+
 			self::$GearmanClient->addServers(implode(',', $settings['servers']));
 		}
 	}
