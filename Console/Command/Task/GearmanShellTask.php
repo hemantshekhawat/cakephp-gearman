@@ -42,12 +42,12 @@ class GearmanShellTask extends AppShell {
  * @param	Object	$callback	The callback to be called. Can be instance of AppShell, or a valid callback
  */
 	public function addMethod($worker, $callback) {
-		if (!($callback instanceof Shell) && !is_callable($callback)) {
-			throw new InvalidArgumentException('A callback of type Shell or Callable is required');
+		if (is_object($callback)) {
+			$callback = array($callback, 'execute');
 		}
 
-		if ($callback instanceof Shell) {
-			$callback = array($callback, 'execute');
+		if (!is_callable($callback)) {
+			throw new InvalidArgumentException('A valid callback is required.');
 		}
 
 		$this->_workers[$worker] = $callback;
