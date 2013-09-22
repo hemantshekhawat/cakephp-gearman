@@ -67,9 +67,11 @@ class GearmanShellTask extends AppShell {
 		$eventManager = new CakeEventManager();
 		$eventManager->dispatch(new CakeEvent('Gearman.beforeWork', $this, $workload));
 
-		call_user_func($this->_workers[$job->functionName()], $job, $workload);
+		$data = call_user_func($this->_workers[$job->functionName()], $job, $workload);
 
 		$eventManager->dispatch(new CakeEvent('Gearman.afterWork', $this, $workload));
+
+		return $data;
 	}
 
 /**
