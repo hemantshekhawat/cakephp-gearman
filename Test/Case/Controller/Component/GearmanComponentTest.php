@@ -16,7 +16,7 @@ class GearmanComponentTest extends CakeTestCase {
 		try {
 			$this->GearmanComponent = new GearmanComponent($Collection, array(
 				'servers'	=> array(
-					'127.0.0.1'
+					'127.0.0.1:4730'
 				)
 			));
 		} catch (GearmanException $e) {
