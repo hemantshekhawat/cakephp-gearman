@@ -19,19 +19,21 @@ class GearmanShellTask extends AppShell {
 
 	public function initialize() {
 		parent::initialize();
-		$this->_settings = Configure::read('Gearman') ?: array('servers' => array('127.0.0.1:4730'));
+		$this->_settings = Configure::read('Gearman') ?: array('servers' => array('127.0.0.1'));
 	}
 
 	public function startup() {
 		parent::startup();
 
 		if (! self::$GearmanWorker) {
+			$serversList = implode(',', $this->_settings['servers']);
+
 			self::$GearmanWorker = new GearmanWorker();
-			self::$GearmanWorker->addServers(implode(',', $this->_settings['servers']));
+			self::$GearmanWorker->addServers($serversList);
 			self::$GearmanWorker->addOptions(GEARMAN_WORKER_GRAB_UNIQ);
 			self::$GearmanWorker->addOptions(GEARMAN_WORKER_NON_BLOCKING);
 
-			$this->log('Creating instance of GearmanWorker', 'info', 'gearman');
+			$this->log('Creating instance of GearmanWorker with servers: ' . $serversList, 'info', 'gearman');
 		}
 	}
 
@@ -51,7 +53,7 @@ class GearmanShellTask extends AppShell {
 		}
 
 		$this->_workers[$worker] = $callback;
-		self::$GearmanWorker->addFunction($worker, array($this, 'work'));
+		self::$GearmanWorker->addFunction($worker, array($this, '_work'));
 
 		$this->log('Adding method ' . $worker . ' to list of functions', 'info', 'gearman');
 	}
