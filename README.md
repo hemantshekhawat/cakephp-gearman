@@ -1,19 +1,24 @@
 CakePHP Gearman
 ===============
 
-An easy way to setup gearman clients and workers.
+An easy way to setup Gearman clients and workers in CakePHP.
 
-# Requirements
+## Requirements
 - pecl-gearman >= 1.0
 
-# Installation
+## Installation
 - `composer install`
 - `git clone ...`
 - HTTP download
 
-Hint: `app/Plugin/CakeGearman`
+Hint: `app/Plugin/Gearman`
 
-# Usage
+## Usage
+
+bootstrap.php:
+```php
+CakePlugin::load('Gearman', array('bootstrap' => true));
+```
 
 Your client code:
 ```php
@@ -21,7 +26,10 @@ class MyController {
 	public $uses = array('Gearman');
 
 	public function someMethod() {
-		$this->Gearman->newTaskBackground('image_resize', array('src' => $pathToImage, 'dst' => $pathToNewImage));
+		$this->Gearman->newTaskBackground('image_resize', array(
+			'src' => $pathToImage, 
+			'dst' => $pathToNewImage
+		));
 	}
 }
 ```
@@ -36,10 +44,18 @@ class ImageResizeShell extends AppShell {
 		$this->Gearman->addMethod('image_resize', $this);
 	}
 
+	/**
+	 * To support running ./Console/cake ImageResize as an alternative
+	 * to ./Console/cake ImageResize GearmanShell
+	 */
 	public function main() {
 		$this->Gearman->execute();
 	}
 
+    /**
+	 * $workload will be a JSON decoded array, if your client
+	 * sends an array as workload. If not, it will be a string
+	 */
 	public function execute(GearmanJob $job, $workload) {
 		// do something useful with $workload
 	}
