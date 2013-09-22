@@ -57,7 +57,8 @@ class GearmanShellTask extends AppShell {
 	}
 
 	public function work(GearmanJob $job) {
-		$json = json_decode($job->workload(), true);
+		$workload = $job->workload();
+		$json = json_decode($workload, true);
 
 		if (! json_last_error()) {
 			$workload = $json;
@@ -81,7 +82,7 @@ class GearmanShellTask extends AppShell {
 		while (@$worker->work() || $worker->returnCode() == GEARMAN_IO_WAIT ||
 			$worker->returnCode() == GEARMAN_NO_JOBS) {
 			// @codingStandardsIgnoreEnd
-			
+
 			if ($worker->returnCode() == GEARMAN_SUCCESS) {
 				continue;
 			}
