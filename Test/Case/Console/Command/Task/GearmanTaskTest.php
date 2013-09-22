@@ -1,6 +1,7 @@
 <?php
 App::uses('ConsoleOutput', 'Console');
 App::uses('ConsoleInput', 'Console');
+App::uses('GearmanTask', 'Gearman.Console/Command/Task');
 
 class GearmanTaskTest extends CakeTestCase {
 
