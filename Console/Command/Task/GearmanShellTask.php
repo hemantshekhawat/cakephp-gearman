@@ -9,7 +9,7 @@ App::uses('AppShell', 'Console/Command');
 App::uses('CakeEvent', 'Event');
 App::uses('CakeEventManager', 'Event');
 
-class GearmanTask extends AppShell {
+class GearmanShellTask extends AppShell {
 
 	public static $GearmanWorker = null;
 

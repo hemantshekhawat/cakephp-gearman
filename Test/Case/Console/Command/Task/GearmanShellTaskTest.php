@@ -1,9 +1,9 @@
 <?php
 App::uses('ConsoleOutput', 'Console');
 App::uses('ConsoleInput', 'Console');
-App::uses('GearmanTask', 'Gearman.Console/Command/Task');
+App::uses('GearmanShellTask', 'Gearman.Console/Command/Task');
 
-class GearmanTaskTest extends CakeTestCase {
+class GearmanShellTaskTest extends CakeTestCase {
 
 	public $GearmanTask;
 
@@ -13,12 +13,12 @@ class GearmanTaskTest extends CakeTestCase {
 		$out = $this->getMock('ConsoleOutput', array(), array(), '', false);
 		$in = $this->getMock('ConsoleInput', array(), array(), '', false);
 
-		$this->GearmanTask = new GearmanTask($out, $out, $in);
+		$this->GearmanTask = new GearmanShellTask($out, $out, $in);
 	}
 
 	public function testGearmanWorker() {
-		$this->assertNotNull(GearmanTask::$GearmanWorker);
-		$this->assertInstanceOf('GearmanWorker', GearmanTask::$GearmanWorker);
+		$this->assertNotNull(GearmanShellTask::$GearmanWorker);
+		$this->assertInstanceOf('GearmanWorker', GearmanShellTask::$GearmanWorker);
 	}
 
 	public function testGearmanMethodInvalidCallback() {
@@ -48,7 +48,7 @@ class GearmanTaskTest extends CakeTestCase {
 	}
 
 	protected function _getProperty($property) {
-		$class = new ReflectionClass('GearmanTask');
+		$class = new ReflectionClass('GearmanShellTask');
 		$property = $class->getProperty($property);
 		$property->setAccessible(true);
 		return $property->getValue();

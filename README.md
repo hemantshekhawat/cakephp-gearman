@@ -29,8 +29,8 @@ class MyController {
 Your worker code (`app/Console/Command/ImageResizeShell`):
 ```php
 class ImageResizeShell extends AppShell {
-	public $uses = array('Gearman');
-	
+	public $uses = array('GearmanShell');
+
 	public function startup() {
 		parent::startup();
 		$this->Gearman->addMethod('image_resize', $this);
