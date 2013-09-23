@@ -42,7 +42,7 @@ class NameOfShell extends AppShell {
 
 	public function startup() {
 		parent::startup();
-		$this->Gearman->addMethod('image_resize', $this);
+		$this->GearmanShell->addMethod('image_resize', $this);
 	}
 
 	/**
@@ -50,7 +50,7 @@ class NameOfShell extends AppShell {
 	 * to ./Console/cake ImageResize GearmanShell
 	 */
 	public function main() {
-		$this->Gearman->execute();
+		$this->GearmanShell->execute();
 	}
 
     /**
