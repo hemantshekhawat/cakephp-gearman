@@ -13,7 +13,7 @@ An easy way to setup Gearman clients and workers in CakePHP. Gearman is a worker
 
 Hint: `app/Plugin/Gearman`
 
-## Usage
+## Examples
 
 Load the plugin:
 ```php
@@ -25,12 +25,42 @@ Add the component to your controller:
 class MyController {
 	public $components = array('Gearman.Gearman');
 
-	public function someMethod() {
-		// use Gearman->newTask() to get the response right away
-		$this->Gearman->newTaskBackground('image_resize', array(
-			'src' => $pathToImage, 
-			'dst' => $pathToNewImage
+	public function reverseName() {
+		$this->autoRender = false;
+		echo 'Norway = ', $this->Gearman->newTask('reverse', 'Norway');
+	}
+
+	public function backgroundJob() {
+		$handle = $this->Gearman->newBackgroundTask('long_running');
+		$this->redirect(array (
+			'action' => 'jobStatus',
+			$handle
 		));
+	}
+
+	public function jobStatus($handle) {
+		$data = $this->Gearman->backgroundStatus ($handle);
+		
+		$this->autoRender = false;
+
+		if (!$data[0]) {
+			echo 'Gearman does not know about this job!';
+			exit;
+		}
+
+		if ($data[1]) {
+			echo 'The job is still running<br />', PHP_EOL;
+		}
+
+		echo 'Progress: ';
+		if ($data[3] > 0) {
+			printf ('%.2f %%', ($data[2] / $data[3]) * 100);
+		} else {
+			echo 'N/A';
+		}
+
+		echo '<br />', PHP_EOL;
+		echo 'Refresh this page to see the progress increase';
 	}
 }
 ```
@@ -42,7 +72,8 @@ class NameOfShell extends AppShell {
 
 	public function startup() {
 		parent::startup();
-		$this->GearmanShell->addMethod('image_resize', $this);
+		$this->GearmanShell->addMethod('reverse', $this);
+		$this->GearmanShell->addMethod('long_running', array($this, 'longRunning'));
 	}
 
 	/**
@@ -58,9 +89,17 @@ class NameOfShell extends AppShell {
 	 * sends an array as workload. If not, it will be a string
 	 */
 	public function execute(GearmanJob $job, $workload) {
-		// Do something useful with $workload.
-		// If using regular tasks (not background), return
-		// the data here
+		return strrev($workload);
+	}
+
+	public function longRunning(GearmanJob $job, $workload) {
+		$m = 60;
+		for ($i = 1; $i <= $m; $i++) {
+			echo "Sleeping, ", ($m - $i), " seconds left\n";
+			// update progress
+			$job->sendStatus($i, $m);
+			sleep(1);
+		}
 	}
 }
 ```
