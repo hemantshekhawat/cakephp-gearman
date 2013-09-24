@@ -32,7 +32,10 @@ before_script:
   - git checkout $CAKE_VERSION
   - chmod -R 770 app/tmp
   - cp -R ../$REPO_NAME app/Plugin/$PLUGIN_NAME
-  - echo "CakePlugin::loadPlugin(array('$PLUGIN_NAME' => array('bootstrap' => true)));" >> app/Config/bootstrap.php
+  - echo "CakePlugin::load('$PLUGIN_NAME', array('bootstrap' => true));" >> app/Config/bootstrap.php
 script:
   - cd app/
   - ./Console/cake test $PLUGIN_NAME All$PLUGIN_NAME
+
+notifications:
+  email: false
