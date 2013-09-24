@@ -34,6 +34,7 @@ before_script:
   - cp -R ../$REPO_NAME app/Plugin/$PLUGIN_NAME
   - echo "CakePlugin::load('$PLUGIN_NAME', array('bootstrap' => true));" >> app/Config/bootstrap.php
 script:
+  - /usr/local/bin/gearmand --daemon
   - cd app/
   - ./Console/cake test $PLUGIN_NAME All$PLUGIN_NAME
 
