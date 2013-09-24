@@ -24,6 +24,7 @@ before_script:
   - curl -L -o gearmand-0.14.tar.gz https://launchpad.net/gearmand/1.0/0.14/+download/gearmand-0.14.tar.gz
   - tar -xzf gearmand-0.14.tar.gz
   - sh -c "cd gearmand-0.14 && ./configure && make && sudo make install && cd .."
+  - sudo ln -s /usr/local/lib/libgearman.so.4.0.0 /usr/lib/libgearman.so.4
   - curl -L -o gearman-0.8.3.tgz http://pecl.php.net/get/gearman/0.8.3
   - tar -xzf gearman-0.8.3.tgz
   - sh -c "cd gearman-0.8.3 && phpize && ./configure && make && sudo make install && cd .."
