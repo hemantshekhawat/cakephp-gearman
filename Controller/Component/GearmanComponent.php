@@ -60,7 +60,12 @@ class GearmanComponent extends Component {
  * @return	mixed				the response of the job
  */
 	public function newTask($task, $workload = null, $taskId = null) {
-		return $this->_handleResponse(self::$GearmanClient->doNormal(
+		if (method_exists(self::$GearmanClient, 'doNormal')) {
+			return $this->_handleResponse(self::$GearmanClient->doNormal(
+				$task, $this->_formatWorkload($workload), $taskId));
+		}
+
+		return $this->_handleResponse(self::$GearmanClient->do(
 			$task, $this->_formatWorkload($workload), $taskId));
 	}
 
@@ -95,6 +100,12 @@ class GearmanComponent extends Component {
  * @return	boolean		Returns TRUE on success or FALSE on failure
  */
 	public function pingServers() {
-		return self::$GearmanClient->ping(md5(uniqid()));
+		$data = md5(uniqid());
+
+		if (method_exists(self::$GearmanClient, 'ping')) {
+			return self::$GearmanClient->ping($data);
+		}
+
+		return self::$GearmanClient->echo($data);
 	}
 }
