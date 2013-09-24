@@ -7,12 +7,12 @@ php:
 
 env:
   global:
-	- REPO_NAME=cakephp-gearman
-	- PLUGIN_NAME=Gearman
+    - REPO_NAME=cakephp-gearman
+    - PLUGIN_NAME=Gearman
   matrix:
-	- CAKE_VERSION=2.2.0
-	- CAKE_VERSION=2.3.0
-	- CAKE_VERSION=2.4.0
+    - CAKE_VERSION=2.2.0
+    - CAKE_VERSION=2.3.0
+    - CAKE_VERSION=2.4.0
 
 before_script:
   - sh -c "sudo apt-get install uuid-dev"
