@@ -4,7 +4,10 @@ CakePHP Gearman
 An easy way to setup Gearman clients and workers in CakePHP. Gearman is a worker server that makes you able to perform lots of heavy logic in the background, in other programs.
 
 ## Requirements
-- pecl-gearman >= 1.0
+- gearmand
+- pecl-gearman >= 0.5
+- PHP >= 5.3
+- CakePHP >= 2.2.0
 
 ## Installation
 - `composer install`
