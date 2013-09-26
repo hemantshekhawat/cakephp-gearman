@@ -3,8 +3,8 @@ tools:
     php_pdepend: true
     php_mess_detector:
         config:
-            naming_rules: { short_variable: true, long_variable: true, short_method: true }
-            controversial_rules: { camel_case_class_name: true, camel_case_parameter_name: true, camel_case_variable_name: true }
+            naming_rules: { long_variable: true, short_method: true }
+            controversial_rules: { camel_case_class_name: true, camel_case_parameter_name: true }
     php_analyzer:
         config:
             parameter_reference_check: { enabled: false }
