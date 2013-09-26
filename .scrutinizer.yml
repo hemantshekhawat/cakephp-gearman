@@ -28,3 +28,5 @@ tools:
             use_statement_fixes: { enabled: true, remove_unused: true, preserve_multiple: false, order_alphabetically: false }
     sensiolabs_security_checker: true
     php_loc: true
+    external_code_coverage:
+        timeout: 600
