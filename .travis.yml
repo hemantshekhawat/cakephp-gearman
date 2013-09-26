@@ -14,38 +14,36 @@ env:
     - CAKE_VERSION=2.3.0
     - CAKE_VERSION=2.4.0
 
-# Installs php-coveralls, PHP_CodeSniffer, libevent, gearmand, pecl-gearman,
-# CakePHP, and moves cakephp-gearman to Plugin/Gearman
-before_script:
+before_install:
   - composer self-update
+  - sudo apt-get install uuid-dev
+
+# Installs php-coveralls, PHP_CodeSniffer, libevent, gearmand, pecl-gearman and CakePHP
+install:
   - composer install --dev --prefer-source
   - pear channel-discover pear.cakephp.org
   - pear install --alldeps cakephp/CakePHP_CodeSniffer
   - phpenv rehash
-  - cd ..
-  - sh -c "sudo apt-get install uuid-dev"
-  - curl -L -o libevent-1.4.14b-stable.tar.gz https://github.com/downloads/libevent/libevent/libevent-1.4.14b-stable.tar.gz
-  - tar -xzf libevent-1.4.14b-stable.tar.gz
-  - sh -c "cd libevent-1.4.14b-stable && ./configure && make && sudo make install && cd .."
+  - curl -L -o - https://github.com/downloads/libevent/libevent/libevent-1.4.14b-stable.tar.gz | tar -xzf
+  - cd libevent-1.4.14b-stable && ./configure && make && sudo make install && cd .. && rm -rf libevent-1.4.14b-stable
   - sudo ln -s /usr/local/lib/libevent-1.4.so.2.2.0 /usr/lib/libevent-1.4.so.2
-  - curl -L -o gearmand-0.14.tar.gz https://launchpad.net/gearmand/1.0/0.14/+download/gearmand-0.14.tar.gz
-  - tar -xzf gearmand-0.14.tar.gz
-  - sh -c "cd gearmand-0.14 && ./configure && make && sudo make install && cd .."
+  - curl -L -o - https://launchpad.net/gearmand/1.0/0.14/+download/gearmand-0.14.tar.gz | tar -xzf
+  - cd gearmand-0.14 && ./configure && make && sudo make install && cd .. && rm -rf gearmand-0.14
   - sudo ln -s /usr/local/lib/libgearman.so.4.0.0 /usr/lib/libgearman.so.4
-  - curl -L -o gearman-0.8.3.tgz http://pecl.php.net/get/gearman/0.8.3
-  - tar -xzf gearman-0.8.3.tgz
-  - sh -c "cd gearman-0.8.3 && phpize && ./configure && make && sudo make install && cd .."
+  - curl -L -o - http://pecl.php.net/get/gearman/0.8.3 | tar -xzf
+  - cd gearman-0.8.3 && phpize && ./configure && make && sudo make install && cd .. && rm -rf gearman-0.8.3
   - echo "extension=gearman.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-  - git clone git://github.com/cakephp/cakephp cakephp
-  - cd cakephp
-  - git checkout $CAKE_VERSION
-  - chmod -R 770 app/tmp
-  - cp -R ../$REPO_NAME app/Plugin/$PLUGIN_NAME
-  - echo "CakePlugin::load('$PLUGIN_NAME', array('bootstrap' => true));" >> app/Config/bootstrap.php
 
-# Starts gearmand daemon and run CodeSniffer and PHPUnit
-script:
+# Start gearmand daemon and clone cakephp
+before_script:
   - /usr/local/sbin/gearmand --daemon
+  - git clone git://github.com/cakephp/cakephp ../cakephp
+  - cd ../cakephp && git checkout $CAKE_VERSION && chmod -R 770 app/tmp
+  - echo "CakePlugin::load('$PLUGIN_NAME', array('bootstrap' => true));" >> app/Config/bootstrap.php
+  - cp -R ../$REPO_NAME app/Plugin/$PLUGIN_NAME
+
+# Run CodeSniffer and PHPUnit
+script:
   - cd app/
   - mkdir -p build/logs
   - phpcs --standard=CakePHP --ignore=*/vendor/* Plugin/$PLUGIN_NAME
