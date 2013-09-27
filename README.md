@@ -119,6 +119,8 @@ If you want to start your worker process in the background, consider using `nohu
 nohup ./Console/Cake NameOfShell 2>&1 > /dev/null &
 ```
 
+You can also consider using the Daemon task in the [cakephp-shells](https://github.com/davidsteinsland/cakephp-shells) repo.
+
 ## Other
 The worker can be written in whatever language supports Gearman. This means that your worker registers at the Gearman server, and your client requests the specific method.
 
