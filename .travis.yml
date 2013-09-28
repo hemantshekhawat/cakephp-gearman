@@ -53,7 +53,7 @@ script:
 after_script:
   - php Plugin/$PLUGIN_NAME/vendor/bin/coveralls -v
   - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
+  - php ocular.phar code-coverage:upload --format=php-clover --repository g/$TRAVIS_REPO_SLUG --revision $TRAVIS_COMMIT build/logs/clover.xml
 
 notifications:
   email: false
