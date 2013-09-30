@@ -67,9 +67,10 @@ class GearmanComponentTest extends CakeTestCase {
 		$method = new ReflectionMethod('GearmanComponent', '_handleResponse');
 		$method->setAccessible(true);
 
-		$mock = $this->getMock('GearmanClient', array('returnCode'));
-		$mock->expects($this->once())->method('returnCode')->will($this->returnValue(GEARMAN_WORK_FAIL));
-		$mock->expects($this->once())->method('error')->will($this->returnValue(''));
+		$mock = $this->getMock('GearmanClient', array('returnCode', 'error'));
+		$mock->expects($this->once())->method('returnCode')
+			->will($this->returnValue(GEARMAN_WORK_FAIL));
+		$mock->expects($this->once())->method('error');
 
 		GearmanComponent::$GearmanClient = $mock;
 

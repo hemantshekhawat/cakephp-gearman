@@ -65,12 +65,14 @@ class GearmanShellTaskTest extends CakeTestCase {
 		$mock->expects($this->once())->method('functionName')
 			->will($this->returnValue($function));
 
-		$this->GearmanTask->addMethod($function, function(GearmanJob $job, $workload) use($data) {
-			$this->assertEquals($data, $workload);
-			return strrev($workload);
-		});
+		$this->GearmanTask->addMethod($function, array($this, 'workCallback'));
 
 		$this->assertEquals(strrev($data), $this->GearmanTask->work($mock));
+	}
+
+	public function workCallback(GearmanJob $job, $workload)
+	{
+		return strrev($workload);
 	}
 
 	public function tearDown() {
