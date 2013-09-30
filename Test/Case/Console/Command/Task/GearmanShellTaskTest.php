@@ -86,13 +86,11 @@ class GearmanShellTaskTest extends CakeTestCase {
 		$this->assertEquals("Hello, " . $data['name'], $this->GearmanTask->work($mock));
 	}
 
-	public function workCallback(GearmanJob $job, $workload)
-	{
+	public function workCallback(GearmanJob $job, $workload) {
 		return strrev($workload);
 	}
 
-	public function greetCallback(GearmanJob $job, $workload)
-	{
+	public function greetCallback(GearmanJob $job, $workload) {
 		return "Hello, " . $workload['name'];
 	}
 
