@@ -20,10 +20,10 @@ class GearmanShellTaskTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$out = $this->getMock('ConsoleOutput', array(), array(), '', false);
-		$in = $this->getMock('ConsoleInput', array(), array(), '', false);
+		$stdOut = $this->getMock('ConsoleOutput', array(), array(), '', false);
+		$stdIn = $this->getMock('ConsoleInput', array(), array(), '', false);
 
-		$this->GearmanTask = new GearmanShellTask($out, $out, $in);
+		$this->GearmanTask = new GearmanShellTask($stdOut, $stdOut, $stdIn);
 		$this->GearmanTask->initialize();
 	}
 
@@ -53,6 +53,19 @@ class GearmanShellTaskTest extends CakeTestCase {
 
 		$this->assertArrayHasKey('file_uploader', $workers);
 		$this->assertEquals(array('DummyClass', 'upload'), $workers['file_uploader']);
+	}
+
+	public function testWork() {
+		$job = new GearmanJob();
+		$func = $job->functionName();
+
+		$this->GearmanTask->addMethod($func, function($data) {
+			$this->assertEmpty($data);
+			return "Hello, World!";
+		});
+
+		$result = $this->GearmanTask->work($job);
+		$this->assertEquals("Hello, World!", $result);
 	}
 
 	public function tearDown() {

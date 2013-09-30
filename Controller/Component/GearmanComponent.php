@@ -14,12 +14,10 @@ class GearmanComponent extends Component {
  * @param	array				$settings	Settings to pass to the gearman client
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
-		parent::__construct($collection, $settings);
-
 		if (! self::$GearmanClient) {
 			self::$GearmanClient = new GearmanClient();
 
-			if (empty($settings['servers'])) {
+			if (! $settings) {
 				$settings = Configure::read('Gearman');
 			}
 
@@ -31,6 +29,8 @@ class GearmanComponent extends Component {
 
 			self::$GearmanClient->addServers(implode(',', $settings['servers']));
 		}
+
+		parent::__construct($collection, $settings);
 	}
 
 	protected function _formatWorkload($workload) {

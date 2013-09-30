@@ -24,6 +24,30 @@ class GearmanComponentTest extends CakeTestCase {
 		}
 	}
 
+	public function testGearmanDefaultConfig() {
+		$Gearman = new GearmanComponent(new ComponentCollection());
+		$this->assertEquals(array('servers' => array('127.0.0.1')), $Gearman->settings);
+	}
+
+	public function testGearmanUserConfig() {
+		$config = array('servers' => '255.255.255.255');
+		Configure::write('Gearman', $config);
+
+		$Gearman = new GearmanComponent(new ComponentCollection());
+		$this->assertEquals($config, $Gearman->settings);
+	}
+
+	public function testFormatWorkload() {
+		$method = new ReflectionMethod('GearmanComponent', '_formatWorkload');
+		$method->setAccessible(true);
+
+		$data = "Hello, World!";
+		$this->assertEquals($data, $method->invoke($this->GearmanComponent, $data));
+		
+		$data = array('name' => 'Zevs');
+		$this->assertEquals(json_encode($data), $method->invoke($this->GearmanComponent, $data));
+	}
+
 	public function testGearmanClient() {
 		$this->assertInstanceOf('GearmanClient', GearmanComponent::$GearmanClient);
 	}
