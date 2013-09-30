@@ -14,6 +14,7 @@ class GearmanComponentTest extends CakeTestCase {
 		$Collection = new ComponentCollection();
 
 		try {
+			GearmanComponent::$GearmanClient = null;
 			$this->GearmanComponent = new GearmanComponent($Collection, array(
 				'servers'	=> array(
 					'127.0.0.1:4730'
@@ -56,6 +57,8 @@ class GearmanComponentTest extends CakeTestCase {
 		$mock = $this->getMock('GearmanClient', array('returnCode'));
 		$mock->expects($this->once())->method('returnCode')->will($this->returnValue(GEARMAN_SUCCESS));
 
+		GearmanComponent::$GearmanClient = $mock;
+
 		$data = "Hello, World!";
 		$this->assertEquals($data, $method->invoke($this->GearmanComponent, $data));
 	}
@@ -68,13 +71,13 @@ class GearmanComponentTest extends CakeTestCase {
 		$mock->expects($this->once())->method('returnCode')->will($this->returnValue(GEARMAN_WORK_FAIL));
 		$mock->expects($this->once())->method('error')->will($this->returnValue(''));
 
+		GearmanComponent::$GearmanClient = $mock;
+
 		$this->setExpectedException('Exception', 'Gearman job did not execute successfully: ');
 		$method->invoke($this->GearmanComponent, "Hello, World!");
 	}
 
 	public function testNewTask() {
-		$this->markTestSkipped('newTask skipped');
-
 		$mock = $this->getMock('GearmanClient', array('do', 'doNormal', 'returnCode'));
 		$mock->expects($this->any())->method('returnCode')
 			->will($this->returnValue(GEARMAN_SUCCESS));
@@ -90,12 +93,11 @@ class GearmanComponentTest extends CakeTestCase {
 			->with($taskName, json_encode($data), null)
 			->will($this->returnValue($return));
 
+		GearmanComponent::$GearmanClient = $mock;
 		$this->assertEquals($return, $this->GearmanComponent->newTask($taskName, $data));
 	}
 
 	public function testNewBackgroundTask() {
-		$this->markTestSkipped('newBackgroundTask skipped');
-
 		$mock = $this->getMock('GearmanClient', array('doBackground', 'returnCode'));
 		$mock->expects($this->any())->method('returnCode')
 			->will($this->returnValue(GEARMAN_SUCCESS));
@@ -107,6 +109,7 @@ class GearmanComponentTest extends CakeTestCase {
 			->with($taskName, $data, null)
 			->will($this->returnValue(''));
 
+		GearmanComponent::$GearmanClient = $mock;
 		$this->GearmanComponent->newBackgroundTask($taskName, $data);
 	}
 

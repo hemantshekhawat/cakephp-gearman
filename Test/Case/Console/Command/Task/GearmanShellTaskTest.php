@@ -56,7 +56,6 @@ class GearmanShellTaskTest extends CakeTestCase {
 	}
 
 	public function testWork() {
-		$this->markTestSkipped('testWork skipped');
 		$data = 'Hello, World';
 		$function = 'reverse';
 
