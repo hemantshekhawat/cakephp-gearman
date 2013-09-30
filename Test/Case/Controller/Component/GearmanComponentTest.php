@@ -49,6 +49,62 @@ class GearmanComponentTest extends CakeTestCase {
 		$this->assertEquals(json_encode($data), $method->invoke($this->GearmanComponent, $data));
 	}
 
+	public function testHandleResponse() {
+		$method = new ReflectionMethod('GearmanComponent', '_handleResponse');
+		$method->setAccessible(true);
+
+		$mock = $this->getMock('GearmanClient', array('returnCode'));
+		$mock->expects($this->once())->method('returnCode')->will($this->returnValue(GEARMAN_SUCCESS));
+
+		$data = "Hello, World!";
+		$this->assertEquals($data, $method->invoke($this->GearmanComponent, $data));
+	}
+
+	public function testHandleInvalidResponse() {
+		$method = new ReflectionMethod('GearmanComponent', '_handleResponse');
+		$method->setAccessible(true);
+
+		$mock = $this->getMock('GearmanClient', array('returnCode'));
+		$mock->expects($this->once())->method('returnCode')->will($this->returnValue(GEARMAN_WORK_FAIL));
+		$mock->expects($this->one())->method('error')->will($this->returnValue(''));
+
+		$this->setExpectedException('Exception', 'Gearman job did not execute successfully: ');
+		$method->invoke($this->GearmanComponent, "Hello, World!");
+	}
+
+	public function testNewTask() {
+		$mock = $this->getMock('GearmanClient', array('do', 'doNormal', 'returnCode'));
+		$mock->expects($this->any())->method('returnCode')
+			->will($this->returnValue(GEARMAN_SUCCESS));
+
+		$taskName = 'reverse';
+		$data = array('data');
+		$return = "Hello, World!";
+
+		$mock->expects($this->any())->method('do')
+			->with($taskName, json_encode($data), null)
+			->will($this->returnValue($return));
+		$mock->expects($this->any())->method('doNormal')
+			->with($taskName, json_encode($data), null)
+			->will($this->returnValue($return));
+
+		$this->assertEquals($return, $this->GearmanComponent->newTask($taskName, $data));
+	}
+
+	public function testNewBackgroundTask() {
+		$mock = $this->getMock('GearmanClient', array('doBackground', 'returnCode'));
+		$mock->expects($this->any())->method('returnCode')
+			->will($this->returnValue(GEARMAN_SUCCESS));
+
+		$taskName = 'reverse';
+		$data = "foobar";
+
+		$mock->expects($this->any())->method('doBackground')
+			->with($taskName, $data, null);
+
+		$this->GearmanComponent->newBackgroundTask($taskName, $data);
+	}
+
 	public function testGearmanClient() {
 		$this->assertInstanceOf('GearmanClient', GearmanComponent::$GearmanClient);
 	}

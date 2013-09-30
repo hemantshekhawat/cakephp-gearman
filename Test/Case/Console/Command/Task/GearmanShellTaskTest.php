@@ -55,6 +55,24 @@ class GearmanShellTaskTest extends CakeTestCase {
 		$this->assertEquals(array('DummyClass', 'upload'), $workers['file_uploader']);
 	}
 
+	public function testWork() {
+		$data = 'Hello, World';
+		$function = 'reverse';
+
+		$mock = $this->getMock('GearmanJob', array('workload', 'functionName'));
+		$mock->expects($this->once())->method('workload')
+			->will($this->returnValue($data));
+		$mock->expects($this->once())->method('functionName')
+			->will($this->returnValue($function));
+
+		$this->GearmanTask->addMethod($function, function(GearmanJob $job, $workload) use($data) {
+			$this->assertEquals($data, $workload);
+			return strrev($workload);
+		});
+
+		$this->assertEquals(strrev($data), $this->GearmanTask->work($mock));
+	}
+
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->GearmanTask);
