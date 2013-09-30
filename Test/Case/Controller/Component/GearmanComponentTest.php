@@ -25,6 +25,7 @@ class GearmanComponentTest extends CakeTestCase {
 	}
 
 	public function testGearmanDefaultConfig() {
+		Configure::write('Gearman', array());
 		$Gearman = new GearmanComponent(new ComponentCollection());
 		$this->assertEquals(array('servers' => array('127.0.0.1')), $Gearman->settings);
 	}
