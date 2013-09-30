@@ -100,7 +100,8 @@ class GearmanComponentTest extends CakeTestCase {
 		$data = "foobar";
 
 		$mock->expects($this->any())->method('doBackground')
-			->with($taskName, $data, null);
+			->with($taskName, $data, null)
+			->will($this->returnValue(''));
 
 		$this->GearmanComponent->newBackgroundTask($taskName, $data);
 	}
