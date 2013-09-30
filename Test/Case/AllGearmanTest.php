@@ -2,6 +2,8 @@
 
 class AllGearmanTest extends CakeTestSuite {
 
+	public $coverageSetup;
+
 	public static function suite() {
 		$suite = new self('All Gearman Tests');
 		$suite->addTestDirectory(__DIR__ . DS . 'Config');

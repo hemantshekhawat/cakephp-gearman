@@ -43,7 +43,7 @@ class GearmanComponentTest extends CakeTestCase {
 
 		$data = "Hello, World!";
 		$this->assertEquals($data, $method->invoke($this->GearmanComponent, $data));
-		
+
 		$data = array('name' => 'Zevs');
 		$this->assertEquals(json_encode($data), $method->invoke($this->GearmanComponent, $data));
 	}
