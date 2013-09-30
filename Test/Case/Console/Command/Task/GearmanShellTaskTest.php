@@ -77,7 +77,7 @@ class GearmanShellTaskTest extends CakeTestCase {
 
 		$mock = $this->getMock('GearmanJob', array('workload', 'functionName'));
 		$mock->expects($this->once())->method('workload')
-			->will($this->returnValue($data));
+			->will($this->returnValue(json_encode($data)));
 		$mock->expects($this->once())->method('functionName')
 			->will($this->returnValue($function));
 
@@ -99,7 +99,7 @@ class GearmanShellTaskTest extends CakeTestCase {
 	public function testExecute() {
 		$mock = $this->getMock('GearmanWorker', array('work', 'returnCode', 'wait', 'error'));
 
-		$mock->expects($this->once())
+		$mock->expects($this->any())
 			->method('work')
 			->will($this->onConsecutiveCalls(false, false, true, true, false));
 
@@ -109,7 +109,7 @@ class GearmanShellTaskTest extends CakeTestCase {
 				GEARMAN_IO_WAIT, GEARMAN_NO_JOBS, GEARMAN_NO_ACTIVE_FDS, GEARMAN_SUCCESS
 			));
 
-		$mock->expects($this->once())->method('wait')->will($this->onConsecutiveCalls(false, true, false));
+		$mock->expects($this->any())->method('wait')->will($this->onConsecutiveCalls(false, true, false));
 
 		$this->setExpectedException('RuntimeException', 'Worker Error: ');
 		GearmanShellTask::$GearmanWorker = $mock;
