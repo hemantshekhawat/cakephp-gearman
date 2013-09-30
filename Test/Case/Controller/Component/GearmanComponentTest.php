@@ -66,7 +66,7 @@ class GearmanComponentTest extends CakeTestCase {
 
 		$mock = $this->getMock('GearmanClient', array('returnCode'));
 		$mock->expects($this->once())->method('returnCode')->will($this->returnValue(GEARMAN_WORK_FAIL));
-		$mock->expects($this->one())->method('error')->will($this->returnValue(''));
+		$mock->expects($this->once())->method('error')->will($this->returnValue(''));
 
 		$this->setExpectedException('Exception', 'Gearman job did not execute successfully: ');
 		$method->invoke($this->GearmanComponent, "Hello, World!");
