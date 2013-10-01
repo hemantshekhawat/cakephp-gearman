@@ -99,7 +99,7 @@ class GearmanShellTaskTest extends CakeTestCase {
 
 		$mock->expects($this->any())
 			->method('work')
-			->will($this->onConsecutiveCalls(false, false, true, true, false, true));
+			->will($this->onConsecutiveCalls(false, false, true, true, true));
 
 		$mock->expects($this->any())
 			->method('returnCode')
