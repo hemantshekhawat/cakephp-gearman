@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Gearman by davidsteinsland</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Gearman</h1>
+        <p class="header">A CakePHP plugin for Gearman</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/davidsteinsland/cakephp-gearman/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/davidsteinsland/cakephp-gearman/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/davidsteinsland/cakephp-gearman">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/davidsteinsland">davidsteinsland</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a name="cakephp-gearman" class="anchor" href="#cakephp-gearman"><span class="octicon octicon-link"></span></a>CakePHP Gearman</h1>
+
+<p><a href="https://travis-ci.org/davidsteinsland/cakephp-gearman"><img src="https://api.travis-ci.org/davidsteinsland/cakephp-gearman.png" alt="Travis CI build"></a> <a href="https://coveralls.io/r/davidsteinsland/cakephp-gearman"><img src="https://coveralls.io/repos/davidsteinsland/cakephp-gearman/badge.png" alt="Coverage Status"></a> <a href="https://scrutinizer-ci.com/g/davidsteinsland/cakephp-gearman/"><img src="https://scrutinizer-ci.com/g/davidsteinsland/cakephp-gearman/badges/quality-score.png?s=a859558edc53dcb313549cb0cc8a7ccb6164d30c" alt="Scrutinizer Quality Score"></a> <a href="https://packagist.org/packages/davidsteinsland/cakephp-gearman"><img src="https://poser.pugx.org/davidsteinsland/cakephp-gearman/v/stable.png" alt="Latest Stable Version"></a> <a href="https://packagist.org/packages/davidsteinsland/cakephp-gearman"><img src="https://poser.pugx.org/davidsteinsland/cakephp-gearman/v/unstable.png" alt="Latest Unstable Version"></a> <a href="https://packagist.org/packages/davidsteinsland/cakephp-gearman"><img src="https://poser.pugx.org/davidsteinsland/cakephp-gearman/downloads.png" alt="Total Downloads"></a> <a href="https://www.versioneye.com/user/projects/52417622632bac7a2e00140a"><img src="https://www.versioneye.com/user/projects/52417622632bac7a2e00140a/badge.png" alt="Dependency Status"></a></p>
+
+<p>An easy way to setup Gearman clients and workers in CakePHP. Gearman is a worker server that makes you able to perform lots of heavy logic in the background, in other programs.</p>
+
+<h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>gearmand</li>
+<li>pecl-gearman &gt;= 0.5</li>
+<li>PHP &gt;= 5.3</li>
+<li>CakePHP &gt;= 2.2.0</li>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<ul>
+<li><code>composer install</code></li>
+<li><code>git clone ...</code></li>
+<li>HTTP download</li>
+</ul><p>Hint: <code>app/Plugin/Gearman</code></p>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>Load the plugin:</p>
+
+<div class="highlight highlight-php"><pre><span class="nx">CakePlugin</span><span class="o">::</span><span class="na">load</span><span class="p">(</span><span class="s1">'Gearman'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'bootstrap'</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">));</span>
+</pre></div>
+
+<p>Add the component to your controller:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">class</span> <span class="nc">MyController</span> <span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$components</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'Gearman.Gearman'</span><span class="p">);</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">reverseName</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">autoRender</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+        <span class="k">echo</span> <span class="s1">'Norway = '</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Gearman</span><span class="o">-&gt;</span><span class="na">newTask</span><span class="p">(</span><span class="s1">'reverse'</span><span class="p">,</span> <span class="s1">'Norway'</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">backgroundJob</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nv">$handle</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Gearman</span><span class="o">-&gt;</span><span class="na">newBackgroundTask</span><span class="p">(</span><span class="s1">'long_running'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">redirect</span><span class="p">(</span><span class="k">array</span> <span class="p">(</span>
+            <span class="s1">'action'</span> <span class="o">=&gt;</span> <span class="s1">'jobStatus'</span><span class="p">,</span>
+            <span class="nv">$handle</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">jobStatus</span><span class="p">(</span><span class="nv">$handle</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Gearman</span><span class="o">-&gt;</span><span class="na">backgroundStatus</span> <span class="p">(</span><span class="nv">$handle</span><span class="p">);</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">autoRender</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">echo</span> <span class="s1">'Gearman does not know about this job!'</span><span class="p">;</span>
+            <span class="k">exit</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">echo</span> <span class="s1">'The job is still running&lt;br /&gt;'</span><span class="p">,</span> <span class="nx">PHP_EOL</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">echo</span> <span class="s1">'Progress: '</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nb">printf</span> <span class="p">(</span><span class="s1">'%.2f %%'</span><span class="p">,</span> <span class="p">(</span><span class="nv">$data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="nv">$data</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">echo</span> <span class="s1">'N/A'</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">echo</span> <span class="s1">'&lt;br /&gt;'</span><span class="p">,</span> <span class="nx">PHP_EOL</span><span class="p">;</span>
+        <span class="k">echo</span> <span class="s1">'Refresh this page to see the progress increase'</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Your worker code (<code>app/Console/Command/&lt;nameOfShell&gt;</code>):</p>
+
+<div class="highlight highlight-php"><pre><span class="k">class</span> <span class="nc">NameOfShell</span> <span class="k">extends</span> <span class="nx">AppShell</span> <span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$tasks</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'Gearman.GearmanShell'</span><span class="p">);</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">startup</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">parent</span><span class="o">::</span><span class="na">startup</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">GearmanShell</span><span class="o">-&gt;</span><span class="na">addMethod</span><span class="p">(</span><span class="s1">'reverse'</span><span class="p">,</span> <span class="nv">$this</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">GearmanShell</span><span class="o">-&gt;</span><span class="na">addMethod</span><span class="p">(</span><span class="s1">'long_running'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="s1">'longRunning'</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * To support running ./Console/cake ImageResize as an alternative</span>
+<span class="sd">     * to ./Console/cake ImageResize GearmanShell</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">GearmanShell</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * $workload will be a JSON decoded array, if your client</span>
+<span class="sd">     * sends an array as workload. If not, it will be a string</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">GearmanJob</span> <span class="nv">$job</span><span class="p">,</span> <span class="nv">$workload</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">strrev</span><span class="p">(</span><span class="nv">$workload</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">longRunning</span><span class="p">(</span><span class="nx">GearmanJob</span> <span class="nv">$job</span><span class="p">,</span> <span class="nv">$workload</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nv">$m</span> <span class="o">=</span> <span class="mi">60</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;=</span> <span class="nv">$m</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">echo</span> <span class="s2">"Sleeping, "</span><span class="p">,</span> <span class="p">(</span><span class="nv">$m</span> <span class="o">-</span> <span class="nv">$i</span><span class="p">),</span> <span class="s2">" seconds left</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+            <span class="c1">// update progress</span>
+            <span class="nv">$job</span><span class="o">-&gt;</span><span class="na">sendStatus</span><span class="p">(</span><span class="nv">$i</span><span class="p">,</span> <span class="nv">$m</span><span class="p">);</span>
+            <span class="nb">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Then <strong>start your worker</strong>:</p>
+
+<div class="highlight highlight-sh"><pre>./Console/Cake NameOfShell
+</pre></div>
+
+<p>If you want to start your worker process in the background, consider using <code>nohup</code>:</p>
+
+<div class="highlight highlight-sh"><pre>nohup ./Console/Cake NameOfShell 2&gt;&amp;1 &gt; /dev/null &amp;
+</pre></div>
+
+<p>You can also consider using the Daemon task in the <a href="https://github.com/davidsteinsland/cakephp-shells">cakephp-shells</a> repo.</p>
+
+<h2>
+<a name="other" class="anchor" href="#other"><span class="octicon octicon-link"></span></a>Other</h2>
+
+<p>The worker can be written in whatever language supports Gearman. This means that your worker registers at the Gearman server, and your client requests the specific method.</p>
+
+<h2>
+<a name="problems" class="anchor" href="#problems"><span class="octicon octicon-link"></span></a>Problems</h2>
+
+<p>Please report them in the Issues page. </p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
